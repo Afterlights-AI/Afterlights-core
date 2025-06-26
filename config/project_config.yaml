@@ -1,0 +1,7 @@
+dataset:
+  file_path: "dataset/path_to_dataset"
+training:
+  model_name: "sentence-transformers/all-MiniLM-L12-v2"
+  batch_size: 8
+  epochs: 5
+  model_output_path: "trained_model/"

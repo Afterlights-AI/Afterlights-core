@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest   # pin a version if you need reproducibility
+    container_name: qdrant
+    ports:
+      - "6333:6333"               # REST/gRPC API
+      - "6334:6334"               # Web UI
+    volumes:
+      - ./config/local.yaml:/qdrant/config/local.yaml
+      - ./qdrant_storage:/qdrant/storage:z   # :z keeps SELinux happy
+    restart: unless-stopped        # optional but useful for production

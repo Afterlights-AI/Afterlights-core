@@ -1,0 +1,17 @@
+[project]
+name = "Afterlights-core"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate>=1.6.0",
+    "ace-tools>=0.0",
+    "datasets>=3.5.1",
+    "einops>=0.8.1",
+    "nltk>=3.9.1",
+    "openai>=1.79.0",
+    "qdrant-client>=1.14.2",
+    "sentence-transformers>=4.1.0",
+    "thefuck>=3.32",
+]

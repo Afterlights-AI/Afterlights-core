@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+*.DS_Store
+# Virtual environments
+.venv
+output/
+checkpoints/
+qdrant_storage/
+dataset/*
+trained_model/*
+logs/*
+!trained_model/README.md
+!dataset/README.md
+scripts/*

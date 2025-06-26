@@ -1,0 +1,5 @@
+log_level: INFO
+
+service:
+  # Maximum size of POST data in a single request in megabytes
+  max_request_size_mb: 100
