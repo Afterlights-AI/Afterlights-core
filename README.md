@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="asset/avatar.jpg" alt="Afterlight Avatar" width="199" />
+    <img src="https://github.com/user-attachments/assets/397977c1-da02-4328-9eb7-a2cbd0a8987c" alt="Afterlight Avatar" />
 </p>
 
 <h1 align="center">Afterlight</h1>
