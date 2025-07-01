@@ -16,4 +16,3 @@ trained_model/*
 logs/*
 !trained_model/README.md
 !dataset/README.md
-scripts/*
