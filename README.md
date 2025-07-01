@@ -166,6 +166,24 @@ python src/retrieve.py \
 
 <br>
 
+#### Continous Hosting
+Use the api.py to host endpoint with uvicorn for 14times faster retrieval speed.
+
+1. run script `./scripts/retrieval_hosting.sh`
+   - The endpoint is default to 8755
+2. use endpoint for fast inference
+   
+```bash
+curl -X POST "http://localhost:8755/retrieve/qdrant" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model_output_path": "/path/to/model/output",
+        "file_path": "/path/to/file.txt",
+        "query": "your search query",
+        "top_k": 20
+    }'
+```
+
 ---
 
 
