@@ -52,6 +52,7 @@ def qdrant_retrieve_mode(model_output_path, file_path, query, collection_name, t
         text = result.payload['text']
         tt = f"{text}\n"
         str_output += tt
+    print(str_output)
     return str_output
         
 def one_time_retrieve_mode(model_output_path:str, file_path:str, query:str, top_k=20):
