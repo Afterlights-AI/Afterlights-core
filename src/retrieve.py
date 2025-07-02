@@ -1,3 +1,4 @@
+import os
 import argparse
 from retrieval.cl_retrieve import CLRetrieve
 from database.connector import QdrantConnector
@@ -14,7 +15,15 @@ def argparser():
     
     return args
 
+def resolve_model_path(path):
+    # Always resolve relative to project root
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    abs_path = os.path.join(project_root, path) if not os.path.isabs(path) else path
+    return abs_path
+
 def qdrant_retrieve_mode(model_output_path, file_path, query, collection_name, top_k=20):
+    model_output_path = resolve_model_path(model_output_path)
+    file_path = resolve_model_path(file_path)
     client = QdrantConnector().connect()
     retriever = CLRetrieve(model_name=model_output_path)
     qc = QdrantController(client)
@@ -55,6 +64,8 @@ def qdrant_retrieve_mode(model_output_path, file_path, query, collection_name, t
     return str_output
         
 def one_time_retrieve_mode(model_output_path:str, file_path:str, query:str, top_k=20):
+    model_output_path = resolve_model_path(model_output_path)
+    file_path = resolve_model_path(file_path)
     retriever = CLRetrieve(model_name=model_output_path)
     text_embeddings = retriever.read_and_embed(
         file_path, 
