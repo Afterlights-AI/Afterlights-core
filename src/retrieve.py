@@ -1,8 +1,7 @@
 import os
 import argparse
 from retrieval.cl_retrieve import CLRetrieve
-from database.connector import QdrantConnector
-from database.qdrant_controller import QdrantController
+from file_util import resolve_model_path
 
 def argparser():
     parser = argparse.ArgumentParser(description="Contrastive Learning Training/Evaluation/Retrieval Script")
@@ -11,56 +10,39 @@ def argparser():
     parser.add_argument("--query", type=str, default="", help="Query string for retrieval mode")
     parser.add_argument("--top_k", type=int, default=20, help="Number of top results to retrieve")
     parser.add_argument("--qdrant", action="store_true", help="Use Qdrant for retrieval")
+    parser.add_argument("--mode", "-m", type=str, choices=["naive_csv", "contextual"], default="naive_csv", help="Mode of operation: naive_csv or contextual")
     args = parser.parse_args()
     
     return args
 
-def resolve_model_path(path):
-    # Always resolve relative to project root
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    abs_path = os.path.join(project_root, path) if not os.path.isabs(path) else path
-    return abs_path
-
-def qdrant_retrieve_mode(model_output_path, file_path, query, collection_name, top_k=20):
-    model_output_path = resolve_model_path(model_output_path)
+def qdrant_retrieve_mode(embedding_model_path, file_path, query, collection_name, mode, top_k=20):
+    embedding_model_path = resolve_model_path(embedding_model_path)
     file_path = resolve_model_path(file_path)
-    client = QdrantConnector().connect()
-    retriever = CLRetrieve(model_name=model_output_path)
-    qc = QdrantController(client)
-    query_vector = retriever.embed_all_options(query)
-    existing_collection = qc.collection_exists(collection_name)
-    
-    if not existing_collection:
-        #print(f"Collection {collection_name} does not exist. Creating a new collection.")
-        embeddings = retriever.read_and_embed(file_path)
-        #print(f"Embedding {len(embeddings)} items.")
-        struct_points = qc.batch_struct_points(
-            points=embeddings
-        )
-        #print(f"struct_points {len(struct_points)} items.")
-        
-        qc.create_collection(
-            name=collection_name, 
-            vector_size=len(query_vector)
-        )
-        
-        qc.upsert_points(
-            collection=collection_name, 
-            points=struct_points)
-        
-        #print(f"Upserting {len(struct_points)} points to collection {collection_name}.")
-        
-    search_result = qc.search(
-        collection_name=collection_name,
-        query_vector=query_vector,
-        limit=top_k
+    match mode:
+        case "naive_csv":
+            from retrieval.structured_csv_retrieve import StructuredCSVRetrieval, StructuredCSVIndexing
+            indexer = StructuredCSVIndexing()
+            retriever = StructuredCSVRetrieval()
+            
+        case "contextual":
+            from retrieval.contextual_retrieve import ContextualRetrieval, ContextualIndexing
+            indexer = ContextualIndexing()
+            retriever = ContextualRetrieval()
+            
+    indexer.index(
+        embedding_model_path=embedding_model_path, 
+        file_path=file_path, 
+        collection_name=collection_name
     )
-    #print(search_result)
-    str_output = ""
-    for result in search_result:
-        text = result.payload['text']
-        tt = f"{text}\n"
-        str_output += tt
+    
+    str_output = retriever.retrieve(
+        collection_name=collection_name,
+        embedding_model_path=embedding_model_path,
+        query=query,
+        top_k=top_k
+    )
+        
+    print(str_output)
     return str_output
         
 def one_time_retrieve_mode(model_output_path:str, file_path:str, query:str, top_k=20):
@@ -81,11 +63,12 @@ if __name__ == "__main__":
     if args.qdrant:
         collection_name = args.file_path.split("/")[-1].split(".")[0]
         qdrant_retrieve_mode(
-            model_output_path=args.model_output_path,
+            embedding_model_path=args.model_output_path,
             file_path=args.file_path,
             query=args.query,
             top_k=args.top_k,
-            collection_name=collection_name
+            collection_name=collection_name,
+            mode=args.mode
         )
     else:
         one_time_retrieve_mode(

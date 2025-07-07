@@ -59,7 +59,7 @@ class CLTraining:
     def save_model(self, model_output_path):
         self.model.save(model_output_path)
     
-    def embed_all_options(self,options):
+    def embed(self,options):
         embeddings = self.model.encode(options)
         return embeddings
     
@@ -75,13 +75,13 @@ class CLTraining:
             dialogue_truth_list.append(dialogue_list)
             summaries.append(dialogue_summary)
 
-        summary_embeddings = self.embed_all_options(summaries)
+        summary_embeddings = self.embed(summaries)
         
         with open(all_dataset, 'r', encoding='utf-8') as f:
             reader = pd.read_csv(f)
             list_of_text = reader['text'].tolist()
 
-        text_embeddings = self.embed_all_options(list_of_text)
+        text_embeddings = self.embed(list_of_text)
         similarities = cosine_similarity(summary_embeddings, text_embeddings)
         
         max_indices = np.argmax(similarities, axis=1)
