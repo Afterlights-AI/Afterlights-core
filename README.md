@@ -186,6 +186,15 @@ curl -X POST "http://localhost:8755/retrieve/qdrant" \
 
 ---
 
+### Experiment
+This quick experiment was ran on the locomo dataset, sample 26.
+Results were evaluated against the "evidence" section
+| Retrieval Method                       | Model Trained | Accuracy                                      |
+|-----------------------------------------|----------------------|---------------------------------------------|
+| Vanilla Retrieval               |    No     | 25.0  |
+| Vanilla Retrieval            | Yes    | 30.65    |
+| Contextual Retrieval       | No  | 42.71 |
+| Contextual Retrieval       | Yes  | 47.74 |
 
 ### 🔬 Expected Results Comparison
 

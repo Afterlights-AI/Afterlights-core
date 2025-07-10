@@ -11,6 +11,7 @@ class StructuredDialogue(BaseModel):
     text: str
     talker: str
     time: Any
+    source: Any = None
     embedding: List[float]
     
 class StructuredQdrantController(QdrantController):
@@ -26,7 +27,8 @@ class StructuredQdrantController(QdrantController):
                 payload={
                     "text": point.text, 
                     "talker": point.talker,
-                    "time": point.time}
+                    "time": point.time,
+                    "source": point.source}
             )
             for i, point in enumerate(points)
         ]
@@ -67,6 +69,8 @@ class StructuredCSVIndexing(Indexer):
             list_of_text = reader['text'].tolist()
             talker = reader['talker'].tolist()
             time = reader['time'].tolist() if 'time' in reader.columns else [''] * len(list_of_text)
+            source = reader['source'].tolist() if 'source' in reader.columns else [''] * len(list_of_text)
+            
             if add_talker:
                 talker_text = [f"{spk}: {txt}" for spk, txt in zip(talker, list_of_text)]
                 text_embeddings = embedding_model.embed(talker_text)
@@ -81,6 +85,7 @@ class StructuredCSVIndexing(Indexer):
                         text=talker_text[i],
                         talker=talker[i],
                         time=time[i],
+                        source=source[i],
                         embedding=text_embeddings[i]
                     )
                    
@@ -89,6 +94,7 @@ class StructuredCSVIndexing(Indexer):
                         text=list_of_text[i],
                         talker=talker[i],
                         time=time[i],
+                        source=source[i],
                         embedding=text_embeddings[i]
                     )
                    
@@ -109,11 +115,18 @@ class StructuredCSVRetrieval(Retriever):
         )
         
         str_output = ""
+        list_of_content = []
         for result in search_result:
             text = result.payload['text']
-            tt = f"{text}\n"
+            talker = result.payload.get('talker', '')
+            time = result.payload.get('time', '')
+            tt = f"[{time}] {talker}: {text}\n"
             str_output += tt
-        return str_output
+            list_of_content.append({
+                "idx": result.payload.get('source', ''),
+                "text": tt
+            })
+        return list_of_content
 
 if __name__ == "__main__":
     # Example usage

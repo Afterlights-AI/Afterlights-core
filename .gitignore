@@ -11,8 +11,11 @@ wheels/
 output/
 checkpoints/
 qdrant_storage/
-dataset/*
+*dataset/*
 trained_model/*
 logs/*
+*log
 !trained_model/README.md
 !dataset/README.md
+*.csv
+*.json

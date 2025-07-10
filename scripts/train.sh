@@ -1,2 +1,2 @@
 #!/bin/sh
-python src/train.py
+python src/train.py[]

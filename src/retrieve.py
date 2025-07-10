@@ -1,5 +1,6 @@
 import os
 import argparse
+print("pwd :::",os.getcwd())
 from retrieval.cl_retrieve import CLRetrieve
 from file_util import resolve_model_path
 
@@ -35,15 +36,14 @@ def qdrant_retrieve_mode(embedding_model_path, file_path, query, collection_name
         collection_name=collection_name
     )
     
-    str_output = retriever.retrieve(
+    output = retriever.retrieve(
         collection_name=collection_name,
         embedding_model_path=embedding_model_path,
         query=query,
         top_k=top_k
     )
         
-    print(str_output)
-    return str_output
+    return output
         
 def one_time_retrieve_mode(model_output_path:str, file_path:str, query:str, top_k=20):
     model_output_path = resolve_model_path(model_output_path)

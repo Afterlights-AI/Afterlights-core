@@ -8,11 +8,12 @@ from model_management.embedding_model_controller import EmbeddingModelController
 from retrieval.chunking_strategies.neighbour_sim import NeibourSimilarityChunker
 from tqdm import tqdm  # Add this import at the top if not already present
 from retrieval.base import Indexer
+from typing import Any
+import csv
 class ContextualKeyValuePair(BaseModel):
     key: str = Field(..., description="The contextual summary of the information.")
     value: str = Field(..., description="The actual content for retrieval.")
     embedding: list[float] = Field(..., description="The embedding vector for the key.")
-    
 class ContextualQdrantController(QdrantController):
     def __init__(self, client):
         super().__init__(client)
@@ -99,6 +100,7 @@ class ContextualIndexing(Indexer):
         assert len(key_embeddings) == len(chunks), "Key embeddings and chunks must have the same length."
         contextual_pairs = []
         for k, v, embedding in zip(keys, chunks, key_embeddings):
+                
             contextual_pairs.append(
                 ContextualKeyValuePair(
                 key=k,
@@ -133,10 +135,11 @@ class ContextualRetrieval:
             limit=top_k
         )
         
-        str_output = ""
+        str_output = []
         for result in search_result:
-            text = result.payload['value']
-            str_output += f"{text}\n"
+            # key = result.payload['key']
+            value = result.payload['value']
+            str_output.append(f"{value}\n")
         
         return str_output
 
