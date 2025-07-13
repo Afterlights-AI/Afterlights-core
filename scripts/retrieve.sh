@@ -1,9 +1,8 @@
-file_path="evaluation/eval_dataset/locomo/locomo_conv-26.csv"
-model_output_path="trained_model/all-minilm-v2"
+file_path="dataset/path"
+model_output_path="trained_model/path"
 top_k=3
-query="When did Melanie paint a sunrise?"
-mode="naive_csv"
-# Use correct path relative to repo root
+query="query"
+mode="contextual" # Options: "naive_csv", "contextual"
 python src/retrieve.py \
     --file_path $file_path \
     --model_output_path $model_output_path \

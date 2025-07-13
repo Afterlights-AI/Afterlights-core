@@ -180,9 +180,11 @@ curl -X POST "http://localhost:8755/retrieve/qdrant" \
         "model_output_path": "/path/to/model/output",
         "file_path": "/path/to/file.txt",
         "query": "your search query",
-        "top_k": 20
+        "top_k": 20,
+        "mode": "naive_csv"
     }'
 ```
+mode can either `naive_csv` or `contextual`
 
 ---
 
