@@ -1,14 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
-
+from model_management.embedding_model_controller import EmbeddingModelController
 class CLRetrieve:
     """
     Class to retrieve
     """
     def __init__(self, model_name):
-        self.model = SentenceTransformer(model_name)
+        self.model = EmbeddingModelController(model_name)
 
     def read_and_embed(self, all_dataset, add_talker=True, text_embedding_only=False):
         with open(all_dataset, 'r', encoding='utf-8') as f:
@@ -18,9 +17,9 @@ class CLRetrieve:
             time = reader['time'].tolist() if 'time' in reader.columns else [''] * len(list_of_text)
             if add_talker:
                 talker_text = [f"{spk}: {txt}" for spk, txt in zip(talker, list_of_text)]
-                text_embeddings = self.embed_all_options(talker_text)
+                text_embeddings = self.model.embed(talker_text)
             else:
-                text_embeddings = self.embed_all_options(list_of_text)
+                text_embeddings = self.model.embed(list_of_text)
             if text_embedding_only:
                 return text_embeddings
             results = []
@@ -45,7 +44,7 @@ class CLRetrieve:
     
     def retrieve(self, all_dataset, query, text_embeddings, top_k=20):
         # Embed the query
-        query_embedding = self.embed_all_options([query])
+        query_embedding = self.model.embed([query])
         with open(all_dataset, 'r', encoding='utf-8') as f:
             reader = pd.read_csv(f)
         #print(len(query_embedding), len(text_embeddings))
@@ -62,14 +61,10 @@ class CLRetrieve:
             str_output += f"{talker}: {text}\n"
             
         return str_output
-    
-    def embed_all_options(self, options):
-        embeddings = self.model.encode(options)
-        return embeddings
 
 if __name__ == "__main__":
     model_name = "trained_model/nazha_model_denoising"
-    model = SentenceTransformer(model_name)
+    model = EmbeddingModelController(model_name)
     options = ["test1"]
     embeddings = model.encode(options)
     print(embeddings)
