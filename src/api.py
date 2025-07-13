@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, BackgroundTasks
 from pydantic import BaseModel
 from retrieve import qdrant_retrieve_mode, one_time_retrieve_mode
+from train import train_mode
 
 app = FastAPI()
 
@@ -33,3 +34,20 @@ def retrieve_one_time(req: RetrieveRequest):
         top_k=req.top_k
     )
     return {"result": result}
+
+class TrainRequest(BaseModel):
+    dataset_path: str
+    model_output_path: str
+    collection_name: str
+
+@app.post("/train/model")
+def train_model(req: TrainRequest, background_tasks: BackgroundTasks):
+    # Start training in the background
+    background_tasks.add_task(
+        train_mode,
+        model_name=req.collection_name,  # You may want to use a different field for model_name if needed
+        file_path=req.dataset_path,
+        model_output_path=req.model_output_path,
+    )
+    return {"status": "training started"}
+
