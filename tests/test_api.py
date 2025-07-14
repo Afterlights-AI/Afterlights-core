@@ -26,6 +26,7 @@ def test_retrieve_qdrant_endpoint():
         "top_k": 2
     }
     response = client.post("/retrieve/qdrant", json=payload)
+    print("try",response.json())
     assert response.status_code == 200
     assert "result" in response.json()
 

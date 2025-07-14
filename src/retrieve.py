@@ -51,7 +51,7 @@ def one_time_retrieve_mode(model_output_path:str, file_path:str, query:str, top_
     retriever = CLRetrieve(model_name=model_output_path)
     text_embeddings = retriever.read_and_embed(
         file_path, 
-        add_talker=True, 
+        add_talker=False,
         text_embedding_only=True
     )
     result = retriever.retrieve(file_path, query, text_embeddings, top_k)

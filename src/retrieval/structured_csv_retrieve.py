@@ -47,7 +47,7 @@ class StructuredCSVIndexing(Indexer):
         
         if existing_collection:
             return
-        embeddings = self.read_and_embed(embedding_model_path, file_path)
+        embeddings = self.read_and_embed(embedding_model_path, file_path, add_talker=False)
         struct_points = qc.batch_struct_points(
             points=embeddings
         )
@@ -62,7 +62,7 @@ class StructuredCSVIndexing(Indexer):
         
             
 
-    def read_and_embed(self, embedding_model_path, all_dataset, add_talker=True, text_embedding_only=False):
+    def read_and_embed(self, embedding_model_path, all_dataset, add_talker=False, text_embedding_only=False):
         embedding_model = EmbeddingModelController(model_name=embedding_model_path)
         with open(all_dataset, 'r', encoding='utf-8') as f:
             reader = pd.read_csv(f)
