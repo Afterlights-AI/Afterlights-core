@@ -119,7 +119,7 @@ training:
 Start training:
 
 ```bash
-python scripts/train.py
+./scripts/train.sh
 ```
 
 
