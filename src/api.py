@@ -16,7 +16,7 @@ class RetrieveRequest(BaseModel):
 def retrieve_qdrant(req: RetrieveRequest):
     collection_name = req.file_path.split("/")[-1].split(".")[0]
     result = qdrant_retrieve_mode(
-        model_output_path=req.model_output_path,
+        embedding_model_path=req.model_output_path,
         file_path=req.file_path,
         query=req.query,
         top_k=req.top_k,
@@ -38,14 +38,14 @@ def retrieve_one_time(req: RetrieveRequest):
 class TrainRequest(BaseModel):
     dataset_path: str
     model_output_path: str
-    collection_name: str
+    model_name: str
 
 @app.post("/train/model")
 def train_model(req: TrainRequest, background_tasks: BackgroundTasks):
     # Start training in the background
     background_tasks.add_task(
         train_mode,
-        model_name=req.collection_name,  # You may want to use a different field for model_name if needed
+        model_name=req.model_name,  # You may want to use a different field for model_name if needed
         file_path=req.dataset_path,
         model_output_path=req.model_output_path,
     )

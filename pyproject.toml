@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.115.14",
     "nltk>=3.9.1",
     "openai>=1.79.0",
+    "pytest>=8.4.1",
     "qdrant-client>=1.14.2",
     "scikit-learn>=1.6.1",
     "sentence-transformers>=4.1.0",
