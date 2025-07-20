@@ -9,18 +9,18 @@ class RetrieveRequest(BaseModel):
     model_output_path: str
     file_path: str
     query: str
+    collection_name: str
     mode: str = "naive_csv"  # Default mode
     top_k: int = 20
 
 @app.post("/retrieve/qdrant")
 def retrieve_qdrant(req: RetrieveRequest):
-    collection_name = req.file_path.split("/")[-1].split(".")[0]
     result = qdrant_retrieve_mode(
         embedding_model_path=req.model_output_path,
         file_path=req.file_path,
         query=req.query,
         top_k=req.top_k,
-        collection_name=collection_name,
+        collection_name=req.collection_name,
         mode=req.mode,
     )
     return {"result": result}
