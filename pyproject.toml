@@ -19,3 +19,13 @@ dependencies = [
     "thefuck>=3.32",
     "uvicorn>=0.35.0",
 ]
+
+[project.scripts]
+afterlights-train = "cli:train_cli"
+afterlights-retrieve = "cli:retrieve_cli"
+afterlights-evaluate = "cli:evaluate_cli"
+afterlights-serve = "cli:serve_cli"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
